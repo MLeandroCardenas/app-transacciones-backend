@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "97a563e1-e0ab-4c84-b6b0-bd36c2490280",
+		"name": "app-transaciones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11803013"
+	},
+	"item": [
+		{
+			"name": "crear tarjetas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pan\": 789666,\r\n    \"titular\": \"Michael\",\r\n    \"cedula\": \"258\",\r\n    \"tipo\": \"C\",\r\n    \"phone\": 12345\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/cards",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "enrolar tarjeta",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identificador\": \"7f1bfa6c6734bb7b23f59d827a8050382119eeb9ab865ed9fcc0707355a28b5a\",\r\n    \"numeroValidacion\": 17\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/cards/enrolar",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"cards",
+						"enrolar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "obtener tarjeta por identificador",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/cards/card?identificador=c09c88f2fcb9a13f986dab8a25756c1eed97f0b6621801203d811fca0cbdea4c",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"cards",
+						"card"
+					],
+					"query": [
+						{
+							"key": "identificador",
+							"value": "c09c88f2fcb9a13f986dab8a25756c1eed97f0b6621801203d811fca0cbdea4c"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eliminar tarjeta",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identificador\": \"40ba2adce2b4213f2dddf3b5a2f9860b3f1262d92ec987921ece90f087968ea0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/cards/delete",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"cards",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Transacciones",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identificador\": \"c09c88f2fcb9a13f986dab8a25756c1eed97f\",\r\n    \"numeroReferencia\": \"456987\",\r\n    \"totalCompra\": 120000,\r\n    \"direccion\": \"Calle 19 25 57\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/transactions",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Anular transaccion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identificador\": \"c09c88f2fcb9a13f986dab8a25756c1eed97f0b6621801203d811fca0cbdea4c\",\r\n    \"numeroReferencia\": \"111387\",\r\n    \"totalCompra\": 120000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/transactions/cancel",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"transactions",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": ""
+		}
+	]
+}
