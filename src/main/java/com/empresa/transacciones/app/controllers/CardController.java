@@ -5,12 +5,14 @@ import com.empresa.transacciones.app.dtos.CardConsultResponse;
 import com.empresa.transacciones.app.dtos.CardDeleteRequest;
 import com.empresa.transacciones.app.dtos.CardRequest;
 import com.empresa.transacciones.app.dtos.CardResponse;
+import com.empresa.transacciones.app.dtos.CardResponseAll;
 import com.empresa.transacciones.app.dtos.EnrollRequest;
 import com.empresa.transacciones.app.dtos.EnrollResponse;
 import com.empresa.transacciones.app.dtos.ResponseStatus;
 import com.empresa.transacciones.app.services.CardService;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,11 @@ public class CardController {
 
     public CardController(CardService cardService) {
         this.cardService = cardService;
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<CardResponseAll>> getAllCards() {
+    	return ResponseEntity.ok(cardService.getAllCards());
     }
 
 

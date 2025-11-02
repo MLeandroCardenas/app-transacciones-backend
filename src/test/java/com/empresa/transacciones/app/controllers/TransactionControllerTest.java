@@ -4,6 +4,7 @@ package com.empresa.transacciones.app.controllers;
 import com.empresa.transacciones.app.dtos.ResponseStatus;
 import com.empresa.transacciones.app.dtos.TransactionRequest;
 import com.empresa.transacciones.app.dtos.TransactionResponse;
+import com.empresa.transacciones.app.dtos.TransactionResponseAll;
 import com.empresa.transacciones.app.services.TransactionService;
 import com.empresa.transacciones.app.utils.commons.Constants;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @WebMvcTest(TransactionController.class)
 class TransactionControllerTest {
@@ -102,4 +108,36 @@ class TransactionControllerTest {
                         .content(invalidRequest))
                 .andExpect(status().isBadRequest());
     }
+    
+    @Test
+    @DisplayName("should return all transactions successfully")
+    void getAllTransactions_success() throws Exception {
+        List<TransactionResponseAll> mockResponse = List.of(
+                new TransactionResponseAll(
+                        "023458",
+                        new BigDecimal( "6500000"),
+                        "Rechazada",
+                        LocalDateTime.now(),
+                        null
+                ),
+                new TransactionResponseAll(
+                        "123456",
+                        new BigDecimal( "6500000"),
+                        "Aprobada",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusMinutes(3)
+                )
+        );
+
+        Mockito.when(transactionService.getAllTransactions()).thenReturn(mockResponse);
+
+        mockMvc.perform(get("/api/v1/transactions")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].numeroReferencia").value("023458"))
+                .andExpect(jsonPath("$[0].estadoTransaccion").value("Rechazada"))
+                .andExpect(jsonPath("$[1].numeroReferencia").value("123456"))
+                .andExpect(jsonPath("$[1].estadoTransaccion").value("Aprobada"));
+    }
+
 }

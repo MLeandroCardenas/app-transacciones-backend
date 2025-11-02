@@ -21,6 +21,7 @@ import org.mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -142,5 +143,50 @@ class TransactionServiceImpTest {
 
         assertThrows(BussinesLogicException.class, () -> transactionService.cancelTransaction(trxRequest));
     }
+    
+    @Test
+    @DisplayName("getAllTransactions - ok")
+    void testGetAllTransactions_Success() {
+        Transaction trx1 = new Transaction();
+        trx1.setNumeroReferencia("001");
+        trx1.setTotalCompra(new BigDecimal("1000"));
+        trx1.setEstadoTransaccion("Aprobada");
+        trx1.setFechaTransaccion(LocalDateTime.now());
+        trx1.setFechaAnulacion(null);
+
+        Transaction trx2 = new Transaction();
+        trx2.setNumeroReferencia("002");
+        trx2.setTotalCompra(new BigDecimal("2000"));
+        trx2.setEstadoTransaccion("Anulada");
+        trx2.setFechaTransaccion(LocalDateTime.now().minusMinutes(5));
+        trx2.setFechaAnulacion(LocalDateTime.now());
+
+        List<Transaction> trxList = List.of(trx1, trx2);
+        when(transactionRepository.findAll()).thenReturn(trxList);
+
+        var result = transactionService.getAllTransactions();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("001", result.get(0).numeroReferencia());
+        assertEquals("Aprobada", result.get(0).estadoTransaccion());
+        verify(transactionRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("getAllTransactions - empty list")
+    void testGetAllTransactions_EmptyList() {
+        when(transactionRepository.findAll()).thenReturn(List.of());
+
+        ModelNotFoundException ex = assertThrows(
+            ModelNotFoundException.class,
+            () -> transactionService.getAllTransactions()
+        );
+
+        assertEquals("01", ex.getCodigo());
+        assertEquals("No se encontraron transacciones registradas.", ex.getMessage());
+        verify(transactionRepository, times(1)).findAll();
+    }
+
 }
 

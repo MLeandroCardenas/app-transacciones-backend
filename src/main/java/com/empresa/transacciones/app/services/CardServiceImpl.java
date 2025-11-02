@@ -4,6 +4,7 @@ import com.empresa.transacciones.app.dtos.CardConsultResponse;
 import com.empresa.transacciones.app.dtos.CardDeleteRequest;
 import com.empresa.transacciones.app.dtos.CardRequest;
 import com.empresa.transacciones.app.dtos.CardResponse;
+import com.empresa.transacciones.app.dtos.CardResponseAll;
 import com.empresa.transacciones.app.dtos.EnrollRequest;
 import com.empresa.transacciones.app.dtos.EnrollResponse;
 import com.empresa.transacciones.app.exceptions.BussinesLogicException;
@@ -12,8 +13,11 @@ import com.empresa.transacciones.app.mappers.CardMapper;
 import com.empresa.transacciones.app.mappers.EnrollMapper;
 import com.empresa.transacciones.app.models.Card;
 import com.empresa.transacciones.app.repository.CardRepository;
+import com.empresa.transacciones.app.utils.commons.HashUtil;
 import com.empresa.transacciones.app.utils.enums.CardStatesEnum;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -80,6 +84,25 @@ public class CardServiceImpl implements CardService {
 		
 		cardFound.setEstado(CardStatesEnum.INACTIVA.name());
 		cardRepository.save(cardFound);
+	}
+
+
+	@Override
+	public List<CardResponseAll> getAllCards() {
+		Iterable<Card> cardsIterable = cardRepository.findAll();
+		List<Card> cards = new ArrayList<>();
+		cardsIterable.forEach(cards::add);
+		if (cards.isEmpty()) {
+	        throw new ModelNotFoundException("01","No se encontraron tarjetas registradas.");
+	    }
+		return cards.stream()
+				.map(card -> new CardResponseAll(
+						HashUtil.maskPan(card.getPan().toPlainString()),
+						card.getTipo(),
+						card.getEstado(),
+						card.getNumeroValidacion(),
+						card.getIdentificador()
+				)).toList();
 	}
 
 }

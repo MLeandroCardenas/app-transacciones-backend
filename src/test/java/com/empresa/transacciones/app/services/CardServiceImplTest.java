@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -182,6 +183,47 @@ class CardServiceImplTest {
         when(cardRepository.findByIdentificador("999")).thenReturn(Optional.empty());
         assertThrows(ModelNotFoundException.class, () -> cardService.deleteCard(request));
     }
+    
+    @Test
+    @DisplayName("should return all cards successfully")
+    void testGetAllCards_Success() {
+        Card card1 = new Card();
+        card1.setPan(new BigDecimal("569823698741630156"));
+        card1.setTipo("D");
+        card1.setEstado(CardStatesEnum.ENROLADA.name());
+        card1.setNumeroValidacion(9);
+        card1.setIdentificador("c09c88f2fcb9a13f986dab8a25756c1eed97f0b6621801203d811fca0cbdea4c");
+
+        Card card2 = new Card();
+        card2.setPan(new BigDecimal("478965412365874569"));
+        card2.setTipo("C");
+        card2.setEstado(CardStatesEnum.CREADA.name());
+        card2.setNumeroValidacion(10);
+        card2.setIdentificador("d89c12f2fcb9a13f986dab8a25756c1eed97f0b6621801203d811fca0cbdea4c");
+
+        when(cardRepository.findAll()).thenReturn(List.of(card1, card2));
+
+        List<CardResponseAll> result = cardService.getAllCards();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("D", result.get(0).tipo());
+        assertEquals("C", result.get(1).tipo());
+        assertTrue(result.get(0).pan().contains("****"));
+        verify(cardRepository, times(1)).findAll();
+    }
+    
+    @Test
+    @DisplayName("should throw ModelNotFoundException when no cards found")
+    void testGetAllCards_NoCardsFound() {
+        when(cardRepository.findAll()).thenReturn(List.of());
+        ModelNotFoundException exception = assertThrows(ModelNotFoundException.class, () -> cardService.getAllCards());
+        assertEquals("01", exception.getCodigo());
+        assertTrue(exception.getMessage().contains("No se encontraron tarjetas"));
+        verify(cardRepository, times(1)).findAll();
+    }
+
+
 
 }
 

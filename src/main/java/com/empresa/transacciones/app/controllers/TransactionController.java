@@ -1,8 +1,11 @@
 package com.empresa.transacciones.app.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.empresa.transacciones.app.dtos.ResponseStatus;
 import com.empresa.transacciones.app.dtos.TransactionRequest;
 import com.empresa.transacciones.app.dtos.TransactionResponse;
+import com.empresa.transacciones.app.dtos.TransactionResponseAll;
 import com.empresa.transacciones.app.services.TransactionService;
 import com.empresa.transacciones.app.utils.commons.Constants;
 
@@ -25,6 +29,11 @@ public class TransactionController {
 	
 	public TransactionController(TransactionService trxService) {
 		this.trxService = trxService;
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<TransactionResponseAll>> getAllTransactions() {
+        return ResponseEntity.ok(trxService.getAllTransactions());
 	}
 	
 	@PostMapping

@@ -6,12 +6,15 @@ import com.empresa.transacciones.app.utils.enums.TransactionStatesEnum;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.empresa.transacciones.app.dtos.TransactionRequest;
 import com.empresa.transacciones.app.dtos.TransactionResponse;
+import com.empresa.transacciones.app.dtos.TransactionResponseAll;
 import com.empresa.transacciones.app.exceptions.BussinesLogicException;
 import com.empresa.transacciones.app.exceptions.ModelNotFoundException;
 import com.empresa.transacciones.app.mappers.TransactionMapper;
@@ -87,6 +90,24 @@ public class TransactionServiceImp implements TransactionService {
 			throw new BussinesLogicException("02", Constants.TRX_NEGATIVE);
 		}
 		
+	}
+
+	@Override
+	public List<TransactionResponseAll> getAllTransactions() {
+		Iterable<Transaction> trxIterable = transactionRepository.findAll();
+		List<Transaction> trxs = new ArrayList<>();
+		trxIterable.forEach(trxs::add);
+		if(trxs.isEmpty()) {
+            throw new ModelNotFoundException("01","No se encontraron transacciones registradas.");
+		}
+		return trxs.stream()
+				.map(trx -> new TransactionResponseAll(
+						trx.getNumeroReferencia(),
+						trx.getTotalCompra(),
+						trx.getEstadoTransaccion(),
+						trx.getFechaTransaccion(),
+						trx.getFechaAnulacion()
+				)).toList();
 	}
 
 }

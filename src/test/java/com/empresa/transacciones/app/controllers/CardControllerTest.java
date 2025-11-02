@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -116,6 +117,35 @@ class CardControllerTest {
                 .andExpect(jsonPath("$.response").value("00"))
                 .andExpect(jsonPath("$.message").value("Se ha eliminado la tarjeta"));
     }
+    
+    @Test
+    @DisplayName("Show all cards ok")
+    void getAllCards_success() throws Exception {
+        // Arrange
+        List<CardResponseAll> mockCards = List.of(
+                new CardResponseAll("156478****7545", "C", "ENROLADA", 9,
+                        "c09c88f2fcb9a13f986dab8a25756c1eed97f0b6621801203d811fca0cbdea4c"),
+                new CardResponseAll("1545", "C", "INACTIVA", 56,
+                        "40ba2adce2b4213f2dddf3b5a2f9860b3f1262d92ec987921ece90f087968ea0")
+        );
+
+        Mockito.when(cardService.getAllCards()).thenReturn(mockCards);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/cards")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].pan").value("156478****7545"))
+                .andExpect(jsonPath("$[0].tipo").value("C"))
+                .andExpect(jsonPath("$[0].estado").value("ENROLADA"))
+                .andExpect(jsonPath("$[0].numeroValidacion").value(9))
+                .andExpect(jsonPath("$[1].estado").value("INACTIVA"))
+                .andExpect(jsonPath("$[1].tipo").value("C"))
+                .andExpect(jsonPath("$[1].numeroValidacion").value(56));
+    }
+
+
 
 }
 

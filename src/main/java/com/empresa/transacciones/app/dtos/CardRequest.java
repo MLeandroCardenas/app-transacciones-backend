@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 
 public record CardRequest(
         @NotNull
-        @DecimalMin("1000000000000000")   // mínimo 16 dígitos
-        @DecimalMax("9999999999999999999") // máximo 19 dígitos
+        @DecimalMin("1000000000000000")
+        @DecimalMax("9999999999999999999")
         BigDecimal pan,
 
         @NotBlank
