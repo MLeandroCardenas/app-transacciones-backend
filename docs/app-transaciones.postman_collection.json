@@ -162,6 +162,40 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Obtener todas las tarjetas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/cards",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las transacciones",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/transactions",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
